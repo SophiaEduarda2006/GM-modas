@@ -9,6 +9,45 @@ const supabaseClient = window.supabase?.createClient(
 );
 
 const SUPABASE_BUCKET = "Produtos";
+async function salvarCapaSupabase(key, file) {
+    if (!supabaseClient) {
+        throw new Error('Supabase não está conectado.');
+    }
+
+    const source = await compressImage(file, 1800, 0.82);
+    const blob = await (await fetch(source)).blob();
+
+    const filePath = capas/${key}-${Date.now()}.jpg;
+
+    const { error: uploadError } = await supabaseClient
+        .storage
+        .from(SUPABASE_BUCKET)
+        .upload(filePath, blob, {
+            contentType: 'image/jpeg',
+            upsert: true
+        });
+
+    if (uploadError) throw uploadError;
+
+    const { data: publicUrlData } = supabaseClient
+        .storage
+        .from(SUPABASE_BUCKET)
+        .getPublicUrl(filePath);
+
+    const publicUrl = publicUrlData.publicUrl;
+
+    const { error: databaseError } = await supabaseClient
+        .from('capas')
+        .upsert({
+            chave: key,
+            url: publicUrl,
+            updated_at: new Date().toISOString()
+        });
+
+    if (databaseError) throw databaseError;
+
+    return publicUrl;
+}
 
 async function carregarProdutosSupabase() {
     if (!supabaseClient) return;
