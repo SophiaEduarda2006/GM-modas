@@ -1034,3 +1034,4 @@ if (supabaseClient) {
                         console.log('Erro:', error);
                 });
 }
+carregarProdutosSupabase();
