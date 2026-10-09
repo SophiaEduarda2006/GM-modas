@@ -1,3 +1,4 @@
+
 const SUPABASE_URL = "https://msdzqocpnivulabxbxnw.supabase.co";
 const SUPABASE_KEY = "sb_publishable_6FuT27VhGSnG4nsOhtFvFg_JrGjCVV8";
 const STORE_WHATSAPP_NUMBER = '5514996774289';
